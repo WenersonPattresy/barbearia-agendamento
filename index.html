@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Agendamento - Barbearia</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Agendar Horário</h2>
+  <form id="form-agendamento">
+    <input type="text" id="nome" placeholder="Seu nome" required />
+    <input type="text" id="telefone" placeholder="Telefone (ex: 92912345678)" required />
+    <input type="datetime-local" id="dataHora" required />
+    <select id="servico" required>
+      <option value="">Selecione um serviço</option>
+      <option value="Corte">Corte</option>
+      <option value="Barba">Barba</option>
+      <option value="Corte + Barba">Corte + Barba</option>
+    </select>
+    <button type="submit">Agendar</button>
+  </form>
+
+  <p id="resposta" style="margin-top: 20px; color: green;"></p>
+
+  <script>
+    document.getElementById("form-agendamento").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value;
+      const telefone = document.getElementById("telefone").value;
+      const dataHora = document.getElementById("dataHora").value;
+      const servico = document.getElementById("servico").value;
+
+      const resposta = document.getElementById("resposta");
+
+      try {
+        const res = await fetch('http://localhost:3000/agendar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, telefone, dataHora, servico })
+        });
+
+        const json = await res.json();
+        resposta.innerText = json.message;
+      } catch (err) {
+        resposta.innerText = "Erro ao agendar. Verifique se o servidor está rodando.";
+      }
+    });
+  </script>
+</body>
+</html>
